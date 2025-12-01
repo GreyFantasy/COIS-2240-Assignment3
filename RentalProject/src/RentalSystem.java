@@ -8,6 +8,10 @@ import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
+import java.io.FileReader;
+import java.io.BufferedReader;
+
+
 
 public class RentalSystem {
     private List<Vehicle> vehicles = new ArrayList<>();
@@ -19,7 +23,7 @@ public class RentalSystem {
     
     private RentalSystem() { //private constructor (enforces singleton.
     	
-    	
+    	loadData();
     }
     
     public static RentalSystem getInstance() { //this is an accessor for the singleton instance
@@ -74,6 +78,89 @@ public class RentalSystem {
             System.out.println("Error saving record: " + e.getMessage());
         }
     }
+    
+    
+    private void loadVehicles() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("vehicles.txt"))) { // opens and reads file line by line
+        	
+
+            String line; 
+            while ((line = reader.readLine()) != null) { // reads by saved vehicle per line until the file ends
+
+                String[] parts = line.split(",");
+                // parts: 0 = plate, 1 = make, 2 = model, 3 = year, 4 = status
+
+                String plate = parts[0];
+                String make = parts[1];
+                String model = parts[2];
+                int year = Integer.parseInt(parts[3]);
+                Vehicle.VehicleStatus status = Vehicle.VehicleStatus.valueOf(parts[4]);
+      
+                Vehicle v = new Vehicle(make, model, year);
+                v.setLicensePlate(plate);
+                v.setStatus(status);
+
+                vehicles.add(v);
+            }
+
+        } catch (Exception e) {
+           
+        }
+    }
+    
+    private void loadCustomers() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("customers.txt"))) { //restates number and customer name and readds to list
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+
+                String[] parts = line.split(",");
+                int id = Integer.parseInt(parts[0]);
+                String name = parts[1];
+
+                customers.add(new Customer(id, name));
+            }
+
+        } catch (Exception e) {
+         
+        }
+    }
+
+    
+    private void loadRecords() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("rental_records.txt"))) { //reconstructs the exact rentalrecord
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+
+                String[] parts = line.split(",");
+                String type = parts[0];
+                String plate = parts[1];
+                int customerId = Integer.parseInt(parts[2]);
+                String dateString = parts[3];
+                double amount = Double.parseDouble(parts[4]);
+
+                Vehicle v = findVehicleByPlate(plate);
+                Customer c = findCustomerById(customerId);
+                LocalDate date = LocalDate.parse(dateString);
+
+                if (v != null && c != null) {
+                    rentalHistory.addRecord(new RentalRecord(v, c, date, amount, type));
+                }
+            }
+
+        } catch (Exception e) {
+            // ignore missing file
+        }
+    }
+
+    private void loadData() {
+        loadVehicles();
+        loadCustomers();
+        loadRecords();
+    }
+
+    
 
 
     
