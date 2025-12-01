@@ -36,6 +36,7 @@ public class RentalSystem {
     private void saveVehicle(Vehicle vehicle) { //saving vehicle
     	try (BufferedWriter writer = new BufferedWriter(new FileWriter("vehicle.txt", true))) { //opens vehicle.txt to be able to add to it
     		writer.write( //writes updated data
+    				vehicle.getClass().getSimpleName() + "," + 
     				vehicle.getLicensePlate() + "," +
     				vehicle.getMake() + "," +
     				vehicle.getModel() + "," +
@@ -81,32 +82,48 @@ public class RentalSystem {
     
     
     private void loadVehicles() {
-        try (BufferedReader reader = new BufferedReader(new FileReader("vehicles.txt"))) { // opens and reads file line by line
-        	
+        try (BufferedReader reader = new BufferedReader(new FileReader("vehicles.txt"))) { //adjusted to support load considering that vehicle class must be abstract
 
-            String line; 
-            while ((line = reader.readLine()) != null) { // reads by saved vehicle per line until the file ends
+            String line;
+            while ((line = reader.readLine()) != null) {
 
                 String[] parts = line.split(",");
-                // parts: 0 = plate, 1 = make, 2 = model, 3 = year, 4 = status
 
-                String plate = parts[0];
-                String make = parts[1];
-                String model = parts[2];
-                int year = Integer.parseInt(parts[3]);
-                Vehicle.VehicleStatus status = Vehicle.VehicleStatus.valueOf(parts[4]);
-      
-                Vehicle v = new Vehicle(make, model, year);
-                v.setLicensePlate(plate);
-                v.setStatus(status);
+                String type = parts[0];
+                String plate = parts[1];
+                String make = parts[2];
+                String model = parts[3];
+                int year = Integer.parseInt(parts[4]);
+                Vehicle.VehicleStatus status = Vehicle.VehicleStatus.valueOf(parts[5]);
 
-                vehicles.add(v);
+                Vehicle v = null;
+
+                switch (type) {
+                    case "Car":
+                        v = new Car(make, model, year, 4); 
+                        break;
+
+                    case "Minibus":
+                        v = new Minibus(make, model, year, false);
+                        break;
+
+                    case "PickupTruck":
+                        v = new PickupTruck(make, model, year, 0.0, false);
+                        break;
+                }
+
+                if (v != null) {
+                    v.setLicensePlate(plate);
+                    v.setStatus(status);
+                    vehicles.add(v);
+                }
             }
 
         } catch (Exception e) {
-           
+            // ignore missing files
         }
     }
+
     
     private void loadCustomers() {
         try (BufferedReader reader = new BufferedReader(new FileReader("customers.txt"))) { //restates number and customer name and readds to list
