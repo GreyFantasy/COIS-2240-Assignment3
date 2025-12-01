@@ -177,12 +177,22 @@ public class RentalSystem {
         loadRecords();
     }
 
-    
-
-
-    
-    
-    
+    private void saveAllVehicles() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("vehicles.txt"))) { //saves all vehicles at once
+            for (Vehicle v : vehicles) { 
+                writer.write(
+                    v.getLicensePlate() + "," +
+                    v.getMake() + "," +
+                    v.getModel() + "," +
+                    v.getYear() + "," +
+                    v.getStatus()
+                );
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error when trying to save vehicles: " + e.getMessage());
+        }
+    }
 
     public void addVehicle(Vehicle vehicle) {
         vehicles.add(vehicle);
@@ -198,19 +208,28 @@ public class RentalSystem {
     	RentalRecord r = new RentalRecord(vehicle, customer, date, amount, "RENT");
     	rentalHistory.addRecord(r);
     	saveRecord(r);
+    	
+    	saveAllVehicles(); //calls to save all vehicle data
        
     }
 
-    public void returnVehicle(Vehicle vehicle, Customer customer, LocalDate date, double extraFees) {
+    public void returnVehicle(Vehicle vehicle, Customer customer, LocalDate date, double extraFees) { //updated saving and logic so all data is stored
         if (vehicle.getStatus() == Vehicle.VehicleStatus.Rented) {
             vehicle.setStatus(Vehicle.VehicleStatus.Available);
-            rentalHistory.addRecord(new RentalRecord(vehicle, customer, date, extraFees, "RETURN"));
+
+            RentalRecord r = new RentalRecord(vehicle, customer, date, extraFees, "RETURN");
+            rentalHistory.addRecord(r);
+            saveRecord(r);
+
+            saveAllVehicles();  // <-- persist updated status
+
             System.out.println("Vehicle returned by " + customer.getCustomerName());
         }
         else {
             System.out.println("Vehicle is not rented.");
         }
-    }    
+    }
+    
 
     public void displayVehicles(Vehicle.VehicleStatus status) {
         // Display appropriate title based on status
@@ -296,4 +315,7 @@ public class RentalSystem {
                 return c;
         return null;
     }
+    
+    
+    
 }
