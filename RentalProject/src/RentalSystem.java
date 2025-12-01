@@ -4,6 +4,11 @@ import java.util.List;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import java.io.FileWriter;
+import java.io.BufferedWriter;
+import java.io.IOException;
+
+
 public class RentalSystem {
     private List<Vehicle> vehicles = new ArrayList<>();
     private List<Customer> customers = new ArrayList<>();
@@ -23,6 +28,25 @@ public class RentalSystem {
     	}
     	return instance;
     }
+    
+    private void saveVehicle(Vehicle vehicle) { //saving vehicle
+    	try (BufferedWriter writer = new BufferedWriter(new FileWriter("vehicle.txt", true))) {
+    		writer.write(
+    				vehicle.getLicensePlate() + "," +
+    				vehicle.getMake() + "," +
+    				vehicle.getModel() + "," +
+    				vehicle.getYear() + "," +
+    				vehicle.getStatus()
+    				);
+    		writer.newLine();
+		
+    	} 
+    	catch (IOException e) {
+    		System.out.println("Error occured while saving machine:" + e.getMessage());
+    	}
+    	
+    }
+    
     
     
     
