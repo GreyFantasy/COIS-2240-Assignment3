@@ -1,3 +1,5 @@
+
+
 public abstract class Vehicle {
     private String licensePlate;
     private String make;

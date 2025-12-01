@@ -1,3 +1,5 @@
+
+
 import java.util.List;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -6,6 +8,25 @@ public class RentalSystem {
     private List<Vehicle> vehicles = new ArrayList<>();
     private List<Customer> customers = new ArrayList<>();
     private RentalHistory rentalHistory = new RentalHistory();
+    
+    private static RentalSystem instance = null; //The Singleton instance
+    
+    
+    private RentalSystem() { //private constructor (enforces singleton.
+    	
+    	
+    }
+    
+    public static RentalSystem getInstance() { //this is an accessor for the singleton instance
+    	if(instance == null) {
+    		instance = new RentalSystem();
+    	}
+    	return instance;
+    }
+    
+    
+    
+    
 
     public void addVehicle(Vehicle vehicle) {
         vehicles.add(vehicle);
