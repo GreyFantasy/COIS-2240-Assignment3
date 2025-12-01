@@ -30,8 +30,8 @@ public class RentalSystem {
     }
     
     private void saveVehicle(Vehicle vehicle) { //saving vehicle
-    	try (BufferedWriter writer = new BufferedWriter(new FileWriter("vehicle.txt", true))) {
-    		writer.write(
+    	try (BufferedWriter writer = new BufferedWriter(new FileWriter("vehicle.txt", true))) { //opens vehicle.txt to be able to add to it
+    		writer.write( //writes updated data
     				vehicle.getLicensePlate() + "," +
     				vehicle.getMake() + "," +
     				vehicle.getModel() + "," +
@@ -39,36 +39,62 @@ public class RentalSystem {
     				vehicle.getStatus()
     				);
     		writer.newLine();
-		
+		//closes when done
     	} 
-    	catch (IOException e) {
+    	catch (IOException e) { //Exception upon issue with writing
     		System.out.println("Error occured while saving machine:" + e.getMessage());
     	}
     	
     }
     
+    private void saveCustomer(Customer customer) { // save customer method
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("customers.txt", true))) {//same method of operations as saveVehicle
+
+            writer.write(customer.getCustomerId() + "," + customer.getCustomerName());
+            writer.newLine();
+
+        } catch (IOException e) {
+            System.out.println("Error saving customer: " + e.getMessage());
+        }
+    }
     
+    private void saveRecord(RentalRecord record) { //every rent and transation calls rental_records.txt, writes to file and keeps permanant record
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("rental_records.txt", true))) {
+
+            writer.write(
+                record.getRecordType() + "," +
+                record.getVehicle().getLicensePlate() + "," +
+                record.getCustomer().getCustomerId() + "," +
+                record.getRecordDate() + "," +
+                record.getTotalAmount()
+            );
+            writer.newLine();
+
+        } catch (IOException e) {
+            System.out.println("Error saving record: " + e.getMessage());
+        }
+    }
+
+
     
     
     
 
     public void addVehicle(Vehicle vehicle) {
         vehicles.add(vehicle);
+        saveVehicle(vehicle);
     }
 
     public void addCustomer(Customer customer) {
         customers.add(customer);
+        saveCustomer(customer);
     }
 
     public void rentVehicle(Vehicle vehicle, Customer customer, LocalDate date, double amount) {
-        if (vehicle.getStatus() == Vehicle.VehicleStatus.Available) {
-            vehicle.setStatus(Vehicle.VehicleStatus.Rented);
-            rentalHistory.addRecord(new RentalRecord(vehicle, customer, date, amount, "RENT"));
-            System.out.println("Vehicle rented to " + customer.getCustomerName());
-        }
-        else {
-            System.out.println("Vehicle is not available for renting.");
-        }
+    	RentalRecord r = new RentalRecord(vehicle, customer, date, amount, "RENT");
+    	rentalHistory.addRecord(r);
+    	saveRecord(r);
+       
     }
 
     public void returnVehicle(Vehicle vehicle, Customer customer, LocalDate date, double extraFees) {
