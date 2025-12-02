@@ -59,6 +59,22 @@ public class VehicleRentalTest {
             boolean secondReturn = rs.returnVehicle(v, c, LocalDate.now(), 5.0);
             assertFalse(secondReturn);
         }
+        
+        @Test
+        void testSingletonInstance() {
+
+            // this gets the RentalSystem multiple times
+            RentalSystem rs1 = RentalSystem.getInstance();
+            RentalSystem rs2 = RentalSystem.getInstance();
+            RentalSystem rs3 = RentalSystem.getInstance();
+
+            // this ensure that all the references point to the same object from/in memory
+            assertSame(rs1, rs2);
+            assertSame(rs2, rs3);
+            
+            //confirm that the references point to the same object to ensure singleton works
+        }
+
 
         
     
