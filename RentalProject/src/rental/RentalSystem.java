@@ -209,19 +209,18 @@ public class RentalSystem {
     	
     	// ensure that the vehicle is available
     	if (vehicle.getStatus() != Vehicle.VehicleStatus.Rented) {
-    		return false; //teh renting fails
-    	}
     	
     	vehicle.setStatus(Vehicle.VehicleStatus.Rented); // state Update
     	
     	//rental gets recorded
     	RentalRecord r = new RentalRecord(vehicle, customer, date, amount, "RENT");
     	rentalHistory.addRecord(r);
-    	saveRecord(r);
-    	
+    	saveRecord(r);	
     	saveAllVehicles(); //calls to save all vehicle data
-    	
-       return true;
+    		
+    	return true; //renting succeed
+    	}
+    	return false; //renting failed as vehicle already rented
     }
 
     
@@ -230,20 +229,20 @@ public class RentalSystem {
        
     	
     	//Must currently be rented
-    	if (vehicle.getStatus() != Vehicle.VehicleStatus.Rented) { 
-            return false;
-    	}
-    	
+    	if (vehicle.getStatus() == Vehicle.VehicleStatus.Rented) { 
+
     	//vehicle status updated
     	vehicle.setStatus(Vehicle.VehicleStatus.Available);
     	
-    		//record
-            RentalRecord r = new RentalRecord(vehicle, customer, date, extraFees, "RETURN");
-            rentalHistory.addRecord(r);
-            saveRecord(r);
-            saveAllVehicles();  // persist updated status
+    	//record
+        RentalRecord r = new RentalRecord(vehicle, customer, date, extraFees, "RETURN");
+        rentalHistory.addRecord(r);
+        saveRecord(r);
+        saveAllVehicles();  // persist updated status
 
         return true; // Returning succeeds
+    	}
+        return false; // Return failed as vehicle is available and not in possesion
     }
 
 

@@ -41,21 +41,21 @@ public class VehicleRentalTest {
             // Get singleton
             RentalSystem rs = RentalSystem.getInstance();
 
-            // --- First rent should succeed ---
+            //First rent should succeed
             boolean firstRent = rs.rentVehicle(v, c, LocalDate.now(), 100.0);
             assertTrue(firstRent);
             assertEquals(Vehicle.VehicleStatus.Rented, v.getStatus());
 
-            // --- Second rent should fail ---
+            //Second rent should fail
             boolean secondRent = rs.rentVehicle(v, c, LocalDate.now(), 50.0);
             assertFalse(secondRent);
 
-            // --- First return should succeed ---
+            //First return should succeed
             boolean firstReturn = rs.returnVehicle(v, c, LocalDate.now(), 20.0);
             assertTrue(firstReturn);
             assertEquals(Vehicle.VehicleStatus.Available, v.getStatus());
 
-            // --- Second return should fail ---
+            //Second return should fail
             boolean secondReturn = rs.returnVehicle(v, c, LocalDate.now(), 5.0);
             assertFalse(secondReturn);
         }
