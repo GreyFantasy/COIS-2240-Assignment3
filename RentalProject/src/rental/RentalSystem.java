@@ -205,32 +205,47 @@ public class RentalSystem {
         saveCustomer(customer);
     }
 
-    public void rentVehicle(Vehicle vehicle, Customer customer, LocalDate date, double amount) {
+    public boolean rentVehicle(Vehicle vehicle, Customer customer, LocalDate date, double amount) { //converted to boolean to return boolean value
+    	
+    	// ensure that the vehicle is available
+    	if (vehicle.getStatus() != Vehicle.VehicleStatus.Rented) {
+    		return false; //teh renting fails
+    	}
+    	
+    	vehicle.setStatus(Vehicle.VehicleStatus.Rented); // state Update
+    	
+    	//rental gets recorded
     	RentalRecord r = new RentalRecord(vehicle, customer, date, amount, "RENT");
     	rentalHistory.addRecord(r);
     	saveRecord(r);
     	
     	saveAllVehicles(); //calls to save all vehicle data
-       
+    	
+       return true;
     }
 
-    public void returnVehicle(Vehicle vehicle, Customer customer, LocalDate date, double extraFees) { //updated saving and logic so all data is stored
-        if (vehicle.getStatus() == Vehicle.VehicleStatus.Rented) {
-            vehicle.setStatus(Vehicle.VehicleStatus.Available);
-
+    
+    // Converted to boolean for testing, returns boolean value
+    public boolean returnVehicle(Vehicle vehicle, Customer customer, LocalDate date, double extraFees) { //updated saving and logic so all data is stored
+       
+    	
+    	//Must currently be rented
+    	if (vehicle.getStatus() != Vehicle.VehicleStatus.Rented) { 
+            return false;
+    	}
+    	
+    	//vehicle status updated
+    	vehicle.setStatus(Vehicle.VehicleStatus.Available);
+    	
+    		//record
             RentalRecord r = new RentalRecord(vehicle, customer, date, extraFees, "RETURN");
             rentalHistory.addRecord(r);
             saveRecord(r);
+            saveAllVehicles();  // persist updated status
 
-            saveAllVehicles();  // <-- persist updated status
-
-            System.out.println("Vehicle returned by " + customer.getCustomerName());
-        }
-        else {
-            System.out.println("Vehicle is not rented.");
-        }
+        return true; // Returning succeeds
     }
-    
+
 
     public void displayVehicles(Vehicle.VehicleStatus status) {
         // Display appropriate title based on status
