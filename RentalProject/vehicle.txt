@@ -1,3 +1,4 @@
 Car,AAA111,Toyota,Corolla,2019,Available
 Minibus,BBB222,Honda,Civic,2021,Available
 PickupTruck,CCC333,Ford,Focus,2024,Available
+Car,ABC123,Toyota,Corolla,2013,Available

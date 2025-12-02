@@ -27,6 +27,11 @@ public class RentalSystem {
     	loadData();
     }
     
+    public List<Vehicle> getVehiclesCopy() { //copy of vehicle list for GUI to read
+        return new ArrayList<>(vehicles);
+    }
+
+    
     public static RentalSystem getInstance() { //this is an accessor for the singleton instance
     	if(instance == null) {
     		instance = new RentalSystem();
