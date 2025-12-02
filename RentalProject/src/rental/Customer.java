@@ -1,3 +1,4 @@
+package rental;
 
 
 public class Customer {

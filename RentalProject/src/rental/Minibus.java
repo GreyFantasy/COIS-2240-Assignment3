@@ -1,3 +1,4 @@
+package rental;
 
 
 public class Minibus extends Vehicle implements Rentable {

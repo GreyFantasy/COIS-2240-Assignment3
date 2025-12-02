@@ -1,3 +1,4 @@
+ package rental;
 
 
 import java.util.Scanner;
@@ -61,7 +62,13 @@ public class VehicleRentalApp {
 		            }
                     
                     if (vehicle != null){
+                    	
+                    	try {
 	                    vehicle.setLicensePlate(plate);
+                    	} catch (IllegalArgumentException e) { //Program displays message for correction and returns to menu
+                    		System.out.println("Error: " + e.getMessage());
+                    	}                    	
+                    	
 	                    rentalSystem.addVehicle(vehicle);
                     }
                     else {

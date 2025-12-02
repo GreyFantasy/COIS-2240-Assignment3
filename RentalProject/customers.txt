@@ -1,3 +1,2 @@
-10100,Roman
 1,George
 2,Anne

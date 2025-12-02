@@ -1,3 +1,4 @@
+package rental;
 
 
 public class Car extends Vehicle implements Rentable {

@@ -1,3 +1,4 @@
+package rental;
 
 
 public class PickupTruck extends Vehicle implements Rentable {

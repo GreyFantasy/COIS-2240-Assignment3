@@ -1,3 +1,4 @@
+package rental;
 
 
 public final class SportCar extends Car {
